@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.PrintWriter;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/")
@@ -39,6 +37,7 @@ public class Controller {
     String clientId = "61351aea-6eba-4e87-be0a-b1a1f4205935";
     String clientSecret = "b4bd0f7d-1336-4e18-a3eb-ac56e6dfc50d";
     String podStorageCrypto = "https://storage.inrupt.com/71416ab6-3dc3-49aa-8ed8-57c633705618/crypto";
+    String storage = "71416ab6-3dc3-49aa-8ed8-57c633705618";
 
     final Session session = OpenIdSession.ofClientCredentials(
             URI.create("https://login.inrupt.com"),
@@ -66,14 +65,13 @@ public class Controller {
         }
     }
 
-    /**
-     *
-     */
     @PostMapping ("/secure")
     public String secureRequest(@RequestBody String encryptedIdentifier) {
-        ArrayList<String> filenames = getFilesName();
-        HashMap<String,String> files = new HashMap<>();
+        HashSet<String> filesnamehm = getFilesName();
+        HashMap<String,String> files = new HashMap<>(); // <plaintext_identifier, encrypted_content>
         printWriter.println("encryptedIdentifier: "+encryptedIdentifier);
+
+        ArrayList<String> filenames = new ArrayList<>(filesnamehm);
 
         for(int i=0;i< filenames.size();i++){
             Request request = Request.newBuilder()
@@ -87,15 +85,21 @@ public class Controller {
             files.put(filenames.get(i),response.body());
         }
 
-        printWriter.println("files: "+ files);
+      //  printWriter.println("files: "+ files);
+        String result = computation(encryptedIdentifier,files);
 
         return files.toString();
     }
 
+    public String computation(String encryptIdentifier,HashMap<String,String> files){
+
+        return "o";
+    }
+
     @GetMapping("/resource/get")
-    public String getResourceAsTurtle(@RequestParam(value = "resourceURL") String resourceURL) {
+    public String getResource(@RequestParam(value = "url") String url) {
         Request request = Request.newBuilder()
-                .uri(URI.create(resourceURL))
+                .uri(URI.create(url))
                 .header("Accept", "text/plain")
                 .GET()
                 .build();
@@ -105,8 +109,7 @@ public class Controller {
         return response.body();
     }
 
-
-    public ArrayList<String> getFilesName() {
+    public HashSet<String> getFilesName() {
         Request request = Request.newBuilder()
                 .uri(URI.create(podStorageCrypto))
                 .header("Accept", "*")
@@ -117,18 +120,23 @@ public class Controller {
                 Response.BodyHandlers.ofString());
 
         String[] msg1 = response.body().split("\n");
-        String[] msg2 = msg1[8].split(" ");
-        ArrayList<String> list = new ArrayList<>();
-        ArrayList<String> files = new ArrayList<>();
-
-        for (String s : msg2) {
-            if (s.contains("crypto")) list.add(s);
+        ArrayList<String> handle1 = new ArrayList<>();
+        for (String s:msg1) {
+            handle1.addAll(List.of(s.split(" ")));
         }
-        for (String s: list) {
+       // printWriter.println(handle1);
+        ArrayList<String> handle2 = new ArrayList<>();
+        for (String s: handle1) {
+            if (s.contains(storage)) handle2.add(s);
+        }
+        HashSet<String> files = new HashSet<>();
+
+        for (String s: handle2) {
             String s1 = s.substring(1,s.length()-1);
             String[] sq = s1.split("/");
             files.add(sq[3]);
         }
+        files.remove(storage);
           // [00111100.txt, 10110001.txt, 10011001.txt]
         return files;
     }

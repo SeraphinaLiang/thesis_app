@@ -7,6 +7,8 @@ import com.inrupt.client.openid.OpenIdSession;
 import com.inrupt.client.solid.SolidSyncClient;
 import com.inrupt.client.webid.WebIdProfile;
 import org.jose4j.json.internal.json_simple.JSONObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.PrintWriter;
@@ -78,7 +80,7 @@ public class Controller {
      * @return the encrypted target file sequence
      */
     @PostMapping("/secure")
-    public ArrayList<String> secureRequest(@RequestBody JSONObject obj) {
+    public ResponseEntity<ArrayList<String>> secureRequest(@RequestBody JSONObject obj) {
 
         //  pk0 & the encrypted id
         String pk0 = (String) obj.get("pk0");
@@ -106,7 +108,7 @@ public class Controller {
         //  printWriter.println("files: "+ files);
         ArrayList<String> result = computation(encryptedIdentifier, files, pk0);
 
-        return result;
+        return ResponseEntity.ok(result);
     }
 
     /**
@@ -119,6 +121,8 @@ public class Controller {
     public ArrayList<String> computation(ArrayList<String> encryptIdentifier, HashMap<String, String> files, String pk0) {
 
         ArrayList<String> result = new ArrayList<>();
+        result.add("hello");
+        result.add("world");
 
         return result;
     }

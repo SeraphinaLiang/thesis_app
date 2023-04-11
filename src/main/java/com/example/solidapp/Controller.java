@@ -7,7 +7,6 @@ import com.inrupt.client.openid.OpenIdSession;
 import com.inrupt.client.solid.SolidSyncClient;
 import com.inrupt.client.webid.WebIdProfile;
 import org.jose4j.json.internal.json_simple.JSONObject;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

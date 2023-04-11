@@ -6,6 +6,7 @@ import com.inrupt.client.auth.Session;
 import com.inrupt.client.openid.OpenIdSession;
 import com.inrupt.client.solid.SolidSyncClient;
 import com.inrupt.client.webid.WebIdProfile;
+import org.jose4j.json.internal.json_simple.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.PrintWriter;
@@ -65,37 +66,104 @@ public class Controller {
         }
     }
 
-    @PostMapping ("/secure")
-    public String secureRequest(@RequestBody String encryptedIdentifier) {
+    @PostMapping("/test")
+    public String test(@RequestBody JSONObject obj) {
+
+        return "ok";
+    }
+
+    /**
+     * API POST  http://localhost:8080/secure , call by client to perform a secure request
+     * @param obj a json object contains 1. the encrypted identifier 2. pk0 (the first array item of the public key)
+     * @return the encrypted target file sequence
+     */
+    @PostMapping("/secure")
+    public ArrayList<String> secureRequest(@RequestBody JSONObject obj) {
+
+        //  pk0 & the encrypted id
+        String pk0 = (String) obj.get("pk0");
+        @SuppressWarnings("unchecked")
+        ArrayList<String> encryptedIdentifier = (ArrayList<String>) obj.get("encryptedIdentifier");
+
+        // get all the file on the pod
         HashSet<String> filesnamehm = getFilesName();
-        HashMap<String,String> files = new HashMap<>(); // <plaintext_identifier, encrypted_content>
-        printWriter.println("encryptedIdentifier: "+encryptedIdentifier);
+        HashMap<String, String> files = new HashMap<>(); // <plaintext_identifier, encrypted_content>
 
         ArrayList<String> filenames = new ArrayList<>(filesnamehm);
 
-        for(int i=0;i< filenames.size();i++){
+        for (int i = 0; i < filenames.size(); i++) {
             Request request = Request.newBuilder()
-                    .uri(URI.create(podStorageCrypto+"/"+filenames.get(i)))
+                    .uri(URI.create(podStorageCrypto + "/" + filenames.get(i)))
                     .header("Accept", "text/plain")
                     .GET()
                     .build();
             Response<String> response = client.send(
                     request,
                     Response.BodyHandlers.ofString());
-            files.put(filenames.get(i),response.body());
+            files.put(filenames.get(i), response.body());
         }
 
-      //  printWriter.println("files: "+ files);
-        String result = computation(encryptedIdentifier,files);
+        //  printWriter.println("files: "+ files);
+        ArrayList<String> result = computation(encryptedIdentifier, files, pk0);
 
-        return files.toString();
+        return result;
     }
 
-    public String computation(String encryptIdentifier,HashMap<String,String> files){
+    /**
+     * perform DGHV computation
+     * @param encryptIdentifier the encrypted identifier of the target file
+     * @param files all the existing files on Solid Pod under /crypto
+     * @param pk0   the first array item of the public key , use for add/multiply
+     * @return encrypted target file sequence
+     */
+    public ArrayList<String> computation(ArrayList<String> encryptIdentifier, HashMap<String, String> files, String pk0) {
 
-        return "o";
+        ArrayList<String> result = new ArrayList<>();
+
+        return result;
     }
 
+    /**
+     * get all the file names on Solid Pod under directory /crypto
+     * @return HashSet<String> filenames
+     */
+    public HashSet<String> getFilesName() {
+        Request request = Request.newBuilder()
+                .uri(URI.create(podStorageCrypto))
+                .header("Accept", "*")
+                .GET()
+                .build();
+        Response<String> response = client.send(
+                request,
+                Response.BodyHandlers.ofString());
+
+        String[] msg1 = response.body().split("\n");
+        ArrayList<String> handle1 = new ArrayList<>();
+        for (String s : msg1) {
+            handle1.addAll(List.of(s.split(" ")));
+        }
+        // printWriter.println(handle1);
+        ArrayList<String> handle2 = new ArrayList<>();
+        for (String s : handle1) {
+            if (s.contains(storage)) handle2.add(s);
+        }
+        HashSet<String> files = new HashSet<>();
+
+        for (String s : handle2) {
+            String s1 = s.substring(1, s.length() - 1);
+            String[] sq = s1.split("/");
+            files.add(sq[3]);
+        }
+        files.remove(storage);
+        // [00111100.txt, 10110001.txt, 10011001.txt]
+        return files;
+    }
+
+    /**
+     * get a resource from pod
+     * @param url the url of the resource
+     * @return the resource
+     */
     @GetMapping("/resource/get")
     public String getResource(@RequestParam(value = "url") String url) {
         Request request = Request.newBuilder()
@@ -109,35 +177,4 @@ public class Controller {
         return response.body();
     }
 
-    public HashSet<String> getFilesName() {
-        Request request = Request.newBuilder()
-                .uri(URI.create(podStorageCrypto))
-                .header("Accept", "*")
-                .GET()
-                .build();
-        Response<String> response = client.send(
-                request,
-                Response.BodyHandlers.ofString());
-
-        String[] msg1 = response.body().split("\n");
-        ArrayList<String> handle1 = new ArrayList<>();
-        for (String s:msg1) {
-            handle1.addAll(List.of(s.split(" ")));
-        }
-       // printWriter.println(handle1);
-        ArrayList<String> handle2 = new ArrayList<>();
-        for (String s: handle1) {
-            if (s.contains(storage)) handle2.add(s);
-        }
-        HashSet<String> files = new HashSet<>();
-
-        for (String s: handle2) {
-            String s1 = s.substring(1,s.length()-1);
-            String[] sq = s1.split("/");
-            files.add(sq[3]);
-        }
-        files.remove(storage);
-          // [00111100.txt, 10110001.txt, 10011001.txt]
-        return files;
-    }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.util.*;
+import com.example.solidapp.Computation;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/")
@@ -105,26 +106,12 @@ public class Controller {
         }
 
         //  printWriter.println("files: "+ files);
-        ArrayList<String> result = computation(encryptedIdentifier, files, pk0);
+        Computation computation = new Computation(encryptedIdentifier, files, pk0);
+        ArrayList<String> result = computation.getResult();
 
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * perform DGHV computation
-     * @param encryptIdentifier the encrypted identifier of the target file
-     * @param files all the existing files on Solid Pod under /crypto
-     * @param pk0   the first array item of the public key , use for add/multiply
-     * @return encrypted target file sequence
-     */
-    public ArrayList<String> computation(ArrayList<String> encryptIdentifier, HashMap<String, String> files, String pk0) {
-
-        ArrayList<String> result = new ArrayList<>();
-        result.add("hello");
-        result.add("world");
-
-        return result;
-    }
 
     /**
      * get all the file names on Solid Pod under directory /crypto

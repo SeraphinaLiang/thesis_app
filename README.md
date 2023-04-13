@@ -1,4 +1,5 @@
 #DGHV Solid App
+
 A Solid App implements binary computation that enables users to
 make private request to Solid App to request for file, while no information 
 of the request is leaked to the Server, nor to any third party. 

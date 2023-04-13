@@ -43,7 +43,7 @@ public class Controller {
 
     String clientId = "61351aea-6eba-4e87-be0a-b1a1f4205935"; // check the reference
     String clientSecret = "b4bd0f7d-1336-4e18-a3eb-ac56e6dfc50d";  // check the reference
-    // your pod url , e.g "https://storage.inrupt.com/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/crypto"
+    // your pod /crypto url , e.g "https://storage.inrupt.com/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/crypto"
     String podStorageCrypto = "https://storage.inrupt.com/71416ab6-3dc3-49aa-8ed8-57c633705618/crypto";
     // the xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx of the above url
     String storage = "71416ab6-3dc3-49aa-8ed8-57c633705618";

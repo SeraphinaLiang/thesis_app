@@ -10,17 +10,18 @@ public class Computation {
 
     /**
      * perform DGHV computation
-     * <p>
+     *
      * encryptIdentifier   the encrypted identifier of the target file
      * files               all the existing files on Solid Pod under /crypto
      * pk0                 the first array item of the public key , use for add/multiply
+     *                     All calculation mod pk0
      */
     private ArrayList<String> encryptIdentifier; // target identifier
     private HashMap<String, String> files;  // <plaintext_identifier, encrypted_content>
-    private String pk0;
-    private BigInteger pk0_gmp;
+    private String pk0;  // the first array item of the public key
+    private BigInteger pk0_gmp;  // public key 0 in BigInteger version
     private ArrayList<String> allIdentifiers = new ArrayList<>(); // all identifiers in the store, plaintext
-    private ArrayList<ArrayList<BigInteger>> filesContent = new ArrayList<>();
+    private ArrayList<ArrayList<BigInteger>> filesContent = new ArrayList<>(); // all the file content
 
 
     public Computation(ArrayList<String> encryptIdentifier, HashMap<String, String> files, String pk0) {
@@ -56,7 +57,7 @@ public class Computation {
         }
     }
 
-    // C_i + V_i + 1
+    // STEP ONE C_i + V_i + 1
     public ArrayList<ArrayList<BigInteger>> AddingStep() {
         ArrayList<BigInteger> target = new ArrayList<>();
         for (String s : encryptIdentifier) {
@@ -104,7 +105,7 @@ public class Computation {
         return result;
     }
 
-    //  calculate localizer
+    // STEP TWO calculate localizer
     public ArrayList<BigInteger> ANDStep(ArrayList<ArrayList<BigInteger>> addResult) {
         ArrayList<BigInteger> andResult = new ArrayList<>();
 
@@ -119,7 +120,7 @@ public class Computation {
         return andResult;
     }
 
-    // times localizer to file
+    // STEP THREE times localizer to file
     public ArrayList<ArrayList<BigInteger>> TimesStep(ArrayList<BigInteger> localizers) {
 
         ArrayList<ArrayList<BigInteger>> result = new ArrayList<>();
@@ -139,6 +140,7 @@ public class Computation {
         return result;
     }
 
+    // STEP FOUR add up file bits according to their position
     public ArrayList<BigInteger> addupStep(ArrayList<ArrayList<BigInteger>> timesResult) {
         int index = findmaxIndex(timesResult);
         ArrayList<BigInteger> result = timesResult.get(index);

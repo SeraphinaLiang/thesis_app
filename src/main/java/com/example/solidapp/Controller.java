@@ -37,10 +37,17 @@ public class Controller {
      * Client Secret
      * b4bd0f7d-1336-4e18-a3eb-ac56e6dfc50d
      */
-    String clientId = "61351aea-6eba-4e87-be0a-b1a1f4205935";
-    String clientSecret = "b4bd0f7d-1336-4e18-a3eb-ac56e6dfc50d";
+
+    // replace the following information with your own version
+    // reference   https://docs.inrupt.com/developer-tools/java/client-libraries/
+
+    String clientId = "61351aea-6eba-4e87-be0a-b1a1f4205935"; // check the reference
+    String clientSecret = "b4bd0f7d-1336-4e18-a3eb-ac56e6dfc50d";  // check the reference
+    // your pod url , e.g "https://storage.inrupt.com/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/crypto"
     String podStorageCrypto = "https://storage.inrupt.com/71416ab6-3dc3-49aa-8ed8-57c633705618/crypto";
+    // the xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx of the above url
     String storage = "71416ab6-3dc3-49aa-8ed8-57c633705618";
+
 
     final Session session = OpenIdSession.ofClientCredentials(
             URI.create("https://login.inrupt.com"),
@@ -68,11 +75,6 @@ public class Controller {
         }
     }
 
-    @PostMapping("/test")
-    public String test(@RequestBody JSONObject obj) {
-
-        return "ok";
-    }
 
     /**
      * API POST  http://localhost:8080/secure , call by client to perform a secure request
@@ -145,7 +147,6 @@ public class Controller {
             files.add(sq[3]);
         }
         files.remove(storage);
-        // [00111100.txt, 10110001.txt, 10011001.txt]
         return files;
     }
 

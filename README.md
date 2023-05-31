@@ -16,7 +16,7 @@ is still under development, but surely this could be adjusted to multi-users app
 1. Create a directory `crypto` in the root directory of your Pod and upload file in it.
 2. Change `clientId, clientSecret, podStorageCrypto, storage` to your own version before use.
 3. And simply run the server! 
-4. Go to https://github.com/SeraphinaLiang/thesis_crypto, which was used to interact with the App.
+4. Go to https://github.com/SeraphinaLiang/Thesis_CryptoBox, which was used to interact with the App.
 
 ### API
 POST  `http://localhost:8080/secure` To make private request to the Solid App

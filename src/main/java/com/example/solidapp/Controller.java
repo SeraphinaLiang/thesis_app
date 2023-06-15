@@ -23,30 +23,17 @@ public class Controller {
     /**
      * Note 1: Authenticated Session
      * Using the client credentials, create an authenticated session.
-     * <p>
-     * Your WebID is
-     * https://id.inrupt.com/seraphina
-     * <p>
-     * This is how sites and apps will recognize you.
-     * You can store data in your Solid Pod at
-     * https://storage.inrupt.com/71416ab6-3dc3-49aa-8ed8-57c633705618/
-     * <p>
-     * Client ID
-     * 61351aea-6eba-4e87-be0a-b1a1f4205935
-     * <p>
-     * Client Secret
-     * b4bd0f7d-1336-4e18-a3eb-ac56e6dfc50d
      */
 
     // replace the following information with your own version
     // reference   https://docs.inrupt.com/developer-tools/java/client-libraries/
 
-    String clientId = "61351aea-6eba-4e87-be0a-b1a1f4205935"; // check the reference
-    String clientSecret = "b4bd0f7d-1336-4e18-a3eb-ac56e6dfc50d";  // check the reference
+    String clientId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"; // check the reference
+    String clientSecret = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";  // check the reference
     // your pod /crypto url , e.g "https://storage.inrupt.com/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/crypto"
-    String podStorageCrypto = "https://storage.inrupt.com/71416ab6-3dc3-49aa-8ed8-57c633705618/crypto";
+    String podStorageCrypto = "https://storage.inrupt.com/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/crypto";
     // the xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx of the above url
-    String storage = "71416ab6-3dc3-49aa-8ed8-57c633705618";
+    String storage = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 
 
     final Session session = OpenIdSession.ofClientCredentials(
